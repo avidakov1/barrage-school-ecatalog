@@ -1,7 +1,5 @@
-package net.barrage.school.java.ecatalog.app;
+package net.barrage.school.java.ecatalog.app.productSource;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.barrage.school.java.ecatalog.config.ProductSourceProperties;
 import net.barrage.school.java.ecatalog.model.Product;
@@ -14,9 +12,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -68,6 +64,7 @@ public class XmlProductSource implements ProductSource {
     private Product convert(Node sourceProduct) {
         var product = new Product();
         product.setId(UUID.randomUUID());
+        product.setMerchant(property.getName());
 
         NodeList sourceProductChildNodes = sourceProduct.getChildNodes();
         for (int i = 0; i < sourceProductChildNodes.getLength(); i++) {
@@ -76,7 +73,10 @@ public class XmlProductSource implements ProductSource {
             switch (childNode.getNodeName()) {
                 case "title" -> product.setName(childNode.getTextContent());
                 case "description" -> product.setDescription(childNode.getTextContent());
-                case "price" -> product.setPrice(Double.parseDouble(childNode.getTextContent()));
+                case "price" -> {
+                    double price = childNode.getTextContent().isEmpty() ? 0 : Double.parseDouble(childNode.getTextContent());
+                    product.setPrice(price);
+                }
             }
         }
 

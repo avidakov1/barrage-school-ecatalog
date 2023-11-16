@@ -1,4 +1,4 @@
-package net.barrage.school.java.ecatalog.app;
+package net.barrage.school.java.ecatalog.app.productSource;
 
 import net.barrage.school.java.ecatalog.config.ProductSourceProperties;
 import net.barrage.school.java.ecatalog.model.Product;

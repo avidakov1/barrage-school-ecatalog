@@ -1,7 +1,9 @@
 package net.barrage.school.java.ecatalog.app;
 
 import lombok.SneakyThrows;
+import net.barrage.school.java.ecatalog.app.productSource.ProductSource;
 import net.barrage.school.java.ecatalog.model.Product;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +21,9 @@ public class ProductServiceImpl implements ProductService {
 
     @SneakyThrows
     @Override
+    @Cacheable(
+            value = "list"
+    )
     public List<Product> listProducts() {
         var result = new ArrayList<Product>();
         for (var ps : productSources) {

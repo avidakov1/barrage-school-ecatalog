@@ -1,6 +1,6 @@
 package net.barrage.school.java.ecatalog.config;
 
-import net.barrage.school.java.ecatalog.app.ProductSource;
+import net.barrage.school.java.ecatalog.app.productSource.ProductSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

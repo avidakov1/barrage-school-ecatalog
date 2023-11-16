@@ -1,4 +1,4 @@
-package net.barrage.school.java.ecatalog.app;
+package net.barrage.school.java.ecatalog.app.productSource;
 
 import lombok.RequiredArgsConstructor;
 import net.barrage.school.java.ecatalog.config.ProductSourceProperties;
@@ -62,6 +62,7 @@ public class XlsxProductSource implements ProductSource {
     private Product convert(Row sourceProduct) {
         var product = new Product();
         product.setId(UUID.randomUUID());
+        product.setMerchant(property.getName());
 
         Iterator<Cell> cellIterator = sourceProduct.cellIterator();
         while (cellIterator.hasNext()) {

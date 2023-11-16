@@ -1,4 +1,4 @@
-package net.barrage.school.java.ecatalog.app;
+package net.barrage.school.java.ecatalog.app.productSource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
@@ -55,6 +55,7 @@ public class JsonProductSource implements ProductSource {
     private Product convert(SourceProduct sourceProduct) {
         var product = new Product();
         product.setId(UUID.randomUUID());
+        product.setMerchant(property.getName());
         product.setName(sourceProduct.getName());
         product.setDescription(sourceProduct.getNotes());
         product.setImage(Optional.ofNullable(sourceProduct.productMedia)
