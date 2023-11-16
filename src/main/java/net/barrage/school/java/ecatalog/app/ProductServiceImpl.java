@@ -1,6 +1,7 @@
 package net.barrage.school.java.ecatalog.app;
 
 import lombok.SneakyThrows;
+import net.barrage.school.java.ecatalog.app.ProductSource.ProductSource;
 import net.barrage.school.java.ecatalog.model.Product;
 import org.springframework.stereotype.Service;
 
