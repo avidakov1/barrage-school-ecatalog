@@ -73,7 +73,10 @@ public class XmlProductSource implements ProductSource {
             switch (childNode.getNodeName()) {
                 case "title" -> product.setName(childNode.getTextContent());
                 case "description" -> product.setDescription(childNode.getTextContent());
-                case "price" -> product.setPrice(Double.parseDouble(childNode.getTextContent()));
+                case "price" -> {
+                    double price = childNode.getTextContent().isEmpty() ? 0 : Double.parseDouble(childNode.getTextContent());
+                    product.setPrice(price);
+                }
             }
         }
 
