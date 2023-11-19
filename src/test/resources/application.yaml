@@ -1,7 +1,17 @@
 spring:
   application:
     name: E-Catalog
+  cache:
+    jcache:
+      config: classpath:ehcache.xml
 
 logging:
   level:
     net.barrage.school.java.ecatalog: DEBUG
+
+ecatalog:
+  products:
+    sources:
+      - name: Fake
+        format: fake
+        url: fake
