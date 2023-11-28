@@ -8,6 +8,8 @@ import net.barrage.school.java.ecatalog.model.Product;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +32,10 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_SYSTEM_ADMIN')")
     public List<Product> listProducts() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("user = {}", authentication);
         return productService.listProducts();
     }
 
@@ -38,6 +43,7 @@ public class ProductController {
     public List<Product> searchProducts(
             @RequestParam("q") String query
     ) {
+        var sec = SecurityContextHolder.getContext();
         return productService.searchProducts(query);
     }
 

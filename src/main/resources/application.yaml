@@ -1,9 +1,6 @@
 spring:
   application:
     name: E-Catalog
-  cache:
-    jcache:
-      config: classpath:ehcache.xml
   jpa:
     hibernate:
       ddl-auto: update
@@ -12,6 +9,9 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: postgres
     password: example
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
 logging:
   level:
