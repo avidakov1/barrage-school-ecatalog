@@ -23,6 +23,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'org.postgresql:postgresql'
 
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'org.apache.poi:poi-ooxml:5.2.2'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.ehcache:ehcache'
+    implementation 'javax.cache:cache-api'
+
+    implementation 'javax.xml.bind:jaxb-api:2.3.1' // To read XML config
+    implementation 'com.sun.xml.bind:jaxb-impl:2.3.6' // To read XML config
+
     // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

@@ -1,7 +1,8 @@
-package net.barrage.school.java.ecatalog.app.productSource;
+package net.barrage.school.java.ecatalog.app.product.source;
 
 import lombok.RequiredArgsConstructor;
 import net.barrage.school.java.ecatalog.config.ProductSourceProperties;
+import net.barrage.school.java.ecatalog.model.Merchant;
 import net.barrage.school.java.ecatalog.model.Product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class XmlProductSource implements ProductSource {
     }
 
     @Override
-    public List<Product> getProducts() {
+    public List<Product> getProducts(Merchant merchant) {
         var products = new ArrayList<Product>();
         try {
             var factory = DocumentBuilderFactory
@@ -50,7 +51,7 @@ public class XmlProductSource implements ProductSource {
                 Node node = nodeIterator.item(i);
 
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    products.add(convert(node));
+                    products.add(convert(node, merchant));
                 }
             }
             return products;
@@ -61,10 +62,10 @@ public class XmlProductSource implements ProductSource {
     }
 
 
-    private Product convert(Node sourceProduct) {
+    private Product convert(Node sourceProduct, Merchant merchant) {
         var product = new Product();
         product.setId(UUID.randomUUID());
-        product.setMerchant(property.getName());
+        product.setMerchant(merchant);
 
         NodeList sourceProductChildNodes = sourceProduct.getChildNodes();
         for (int i = 0; i < sourceProductChildNodes.getLength(); i++) {
@@ -81,5 +82,10 @@ public class XmlProductSource implements ProductSource {
         }
 
         return product;
+    }
+
+    @Override
+    public ProductSourceProperties.SourceProperty getProperty() {
+        return property;
     }
 }
