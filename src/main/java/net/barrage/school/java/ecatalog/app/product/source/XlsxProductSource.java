@@ -1,7 +1,8 @@
-package net.barrage.school.java.ecatalog.app.productSource;
+package net.barrage.school.java.ecatalog.app.product.source;
 
 import lombok.RequiredArgsConstructor;
 import net.barrage.school.java.ecatalog.config.ProductSourceProperties;
+import net.barrage.school.java.ecatalog.model.Merchant;
 import net.barrage.school.java.ecatalog.model.Product;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -39,7 +40,7 @@ public class XlsxProductSource implements ProductSource {
     }
 
     @Override
-    public List<Product> getProducts() {
+    public List<Product> getProducts(Merchant merchant) {
         try {
             var products = new ArrayList<Product>();
             XSSFWorkbook excelData = new XSSFWorkbook(new URL(property.getUrl()).openStream());
@@ -49,7 +50,7 @@ public class XlsxProductSource implements ProductSource {
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
 
-                products.add(convert(row));
+                products.add(convert(row, merchant));
             }
             return products;
         } catch (Exception e1) {
@@ -58,11 +59,16 @@ public class XlsxProductSource implements ProductSource {
         }
     }
 
+    @Override
+    public ProductSourceProperties.SourceProperty getProperty() {
+        return property;
+    }
 
-    private Product convert(Row sourceProduct) {
+
+    private Product convert(Row sourceProduct, Merchant merchant) {
         var product = new Product();
         product.setId(UUID.randomUUID());
-        product.setMerchant(property.getName());
+        product.setMerchant(merchant);
 
         Iterator<Cell> cellIterator = sourceProduct.cellIterator();
         while (cellIterator.hasNext()) {

@@ -1,6 +1,7 @@
-package net.barrage.school.java.ecatalog.app.productSource;
+package net.barrage.school.java.ecatalog.app.product.source;
 
 import net.barrage.school.java.ecatalog.config.ProductSourceProperties;
+import net.barrage.school.java.ecatalog.model.Merchant;
 import net.barrage.school.java.ecatalog.model.Product;
 
 import java.util.List;
@@ -14,5 +15,7 @@ public interface ProductSource {
         ProductSource create(ProductSourceProperties.SourceProperty psp);
     }
 
-    List<Product> getProducts();
+    List<Product> getProducts(Merchant merchant);
+
+    ProductSourceProperties.SourceProperty getProperty();
 }

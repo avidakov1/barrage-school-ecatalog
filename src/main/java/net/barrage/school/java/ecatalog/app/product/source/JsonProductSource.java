@@ -1,9 +1,10 @@
-package net.barrage.school.java.ecatalog.app.productSource;
+package net.barrage.school.java.ecatalog.app.product.source;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import net.barrage.school.java.ecatalog.config.ProductSourceProperties;
+import net.barrage.school.java.ecatalog.model.Merchant;
 import net.barrage.school.java.ecatalog.model.Product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,10 +41,10 @@ public class JsonProductSource implements ProductSource {
     }
 
     @Override
-    public List<Product> getProducts() {
+    public List<Product> getProducts(Merchant merchant) {
         try {
             return objectMapper.readValue(new URL(property.getUrl()).openStream(), SourceProductList.class).stream()
-                    .map(sourceProduct -> convert(sourceProduct))
+                    .map(sourceProduct -> convert(sourceProduct, merchant))
                     .toList();
         } catch (Exception e1) {
             log.warn("Oops!", e1);
@@ -52,10 +53,10 @@ public class JsonProductSource implements ProductSource {
     }
 
 
-    private Product convert(SourceProduct sourceProduct) {
+    private Product convert(SourceProduct sourceProduct, Merchant merchant) {
         var product = new Product();
         product.setId(UUID.randomUUID());
-        product.setMerchant(property.getName());
+        product.setMerchant(merchant);
         product.setName(sourceProduct.getName());
         product.setDescription(sourceProduct.getNotes());
         product.setImage(Optional.ofNullable(sourceProduct.productMedia)
@@ -74,5 +75,10 @@ public class JsonProductSource implements ProductSource {
         private String notes;
         private List<String> productMedia;
         private double price;
+    }
+
+    @Override
+    public ProductSourceProperties.SourceProperty getProperty() {
+        return property;
     }
 }
