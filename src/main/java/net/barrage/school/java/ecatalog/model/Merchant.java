@@ -1,5 +1,6 @@
 package net.barrage.school.java.ecatalog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,6 +33,8 @@ public class Merchant implements Serializable {
     @Column(name = "created_at")
     LocalDateTime createdAt = LocalDateTime.now();
 
+    @ToString.Exclude
+    @JsonIgnore
     @OneToMany(mappedBy = "merchant")
     private Set<Product> products;
 }
