@@ -1,5 +1,9 @@
 package net.barrage.school.java.ecatalog.web;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -30,13 +34,20 @@ import java.util.UUID;
 public class ProductController {
 
     private final ProductService productService;
+    private final MeterRegistry meterRegistry;
+
+    @Getter(value = AccessLevel.PRIVATE, lazy = true)
+    private final Counter listProductsCounter = meterRegistry
+            .counter("ecatalog.products.listProducts");
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_SYSTEM_ADMIN')")
     public List<Product> listProducts() {
+        getListProductsCounter().increment();
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("user = {}", authentication);
-        return productService.listProducts();
+        var products = productService.listProducts();
+        return products;
     }
 
     @GetMapping("/search")
