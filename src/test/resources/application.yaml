@@ -1,9 +1,9 @@
 spring:
   application:
     name: E-Catalog
-  cache:
-    jcache:
-      config: classpath:ehcache.xml
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
 logging:
   level:
