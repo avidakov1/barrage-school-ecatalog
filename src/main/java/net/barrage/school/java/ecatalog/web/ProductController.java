@@ -1,19 +1,20 @@
 package net.barrage.school.java.ecatalog.web;
 
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.barrage.school.java.ecatalog.app.product.ProductService;
 import net.barrage.school.java.ecatalog.model.Product;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,24 +31,34 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping("/e-catalog/api/v1/products")
-@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
     private final MeterRegistry meterRegistry;
+    private final Timer listProductTimer;
+
+    public ProductController(
+            ProductService productService,
+            MeterRegistry meterRegistry
+    ) {
+        this.productService = productService;
+        this.meterRegistry = meterRegistry;
+        this.listProductTimer = meterRegistry.timer("ecatalog.products.listProducts.timer");
+        Gauge.builder("ecatalog.product.count", this, controller -> controller.listProducts().size())
+                .description("Number of products")
+                .register(meterRegistry);
+    }
 
     @Getter(value = AccessLevel.PRIVATE, lazy = true)
     private final Counter listProductsCounter = meterRegistry
             .counter("ecatalog.products.listProducts");
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_SYSTEM_ADMIN')")
     public List<Product> listProducts() {
+        Timer.Sample sample = Timer.start(meterRegistry);
         getListProductsCounter().increment();
-        var authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("user = {}", authentication);
-        var products = productService.listProducts();
-        return products;
+        sample.stop(listProductTimer);
+        return productService.listProducts();
     }
 
     @GetMapping("/search")
@@ -100,7 +111,9 @@ public class ProductController {
 
     @SneakyThrows
     @PostMapping("/sync/{merchantName}")
+    @PreAuthorize("hasRole('ROLE_SYSTEM_ADMIN')")
     public  ResponseEntity<String> loadSourceMerchant(@PathVariable("merchantName") String merchantName) {
+        log.info("Loading merchant: {}", merchantName);
         productService.loadSourceMerchant(merchantName);
         return ResponseEntity.ok("Merchant synced");
     }

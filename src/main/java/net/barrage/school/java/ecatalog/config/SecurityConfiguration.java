@@ -1,7 +1,6 @@
 package net.barrage.school.java.ecatalog.config;
 
 import com.nimbusds.jwt.JWTParser;
-import jakarta.transaction.Transactional;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,14 +41,14 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 // https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(
                         jwt -> jwt.decoder(jwtDecoder())))
                 .httpBasic(Customizer.withDefaults())
-                .formLogin(Customizer.withDefaults())
                 .sessionManagement(Customizer.withDefaults())
+                .formLogin(Customizer.withDefaults())
                 .anonymous(Customizer.withDefaults());
         return http.build();
     }

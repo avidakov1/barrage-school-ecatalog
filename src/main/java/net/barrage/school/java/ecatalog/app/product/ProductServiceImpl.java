@@ -9,7 +9,6 @@ import net.barrage.school.java.ecatalog.app.product.source.ProductSource;
 import net.barrage.school.java.ecatalog.model.Merchant;
 import net.barrage.school.java.ecatalog.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,9 +31,6 @@ public class ProductServiceImpl implements ProductService {
 
     @SneakyThrows
     @Override
-    @Cacheable(
-            value = "list"
-    )
     public List<Product> listProducts() {
         var products = new ArrayList<Product>();
         productRepository.findAll().forEach(products::add);
